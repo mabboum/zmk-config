@@ -1,4 +1,5 @@
 #include "lily58.dtsi"
+#include <dt-bindings/led/led.h>
 
 &kscan0 {
     col-gpios
@@ -15,19 +16,40 @@
     status = "okay";
 };
 
+&pinctrl {
+    pio0_spi0_default: pio0_spi0_default {
+        group1 {
+            pinmux = <PIO0_P16>;  // GP16 for your board
+        };
+    };
+};
+
+&pio0 {
+    status = "okay";
+    
+    pio0_spi0: pio0_spi0 {
+        pinctrl-0 = <&pio0_spi0_default>;
+        pinctrl-names = "default";
+        compatible = "raspberrypi,pico-spi-pio";
+        #address-cells = <1>;
+        #size-cells = <0>;
+        clocks = <&system_clk>;
+        clock-frequency = <4000000>;
+        
+        led_strip: ws2812@0 {
+            compatible = "worldsemi,ws2812-spi";
+            reg = <0>;
+            spi-max-frequency = <4000000>;
+            chain-length = <12>;
+            spi-one-frame = <0x70>;
+            spi-zero-frame = <0x40>;
+            color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>;
+        };
+    };
+};
+
 / {
     chosen {
         zmk,underglow = &led_strip;
-    };
-
-    led_strip: ws2812 {
-        compatible = "worldsemi,ws2812-gpio";
-        label = "WS2812";
-        
-        chain-length = <12>; // Adjust to your LED count
-        color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>;
-        
-        /* GPIO pin for data - change this to match your hardware */
-        in-gpios = <&gpio0 16 0>;  // Using GP6, adjust as needed
     };
 };
