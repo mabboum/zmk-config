@@ -13,18 +13,19 @@
 
 &left_encoder {
     status = "okay";
-}; 
+};
 
-underglow: ws2812 {
-        compatible = "worldsemi,ws2812-gpio";
-        gpios = <&gpio0 16 GPIO_ACTIVE_HIGH>;
-        chain-length = <12>;
-        color-order = <1 0 2>;
-        label = "LILY58_UNDERGLOW";
-    };
+// Configure the PIO for WS2812 on the specific pin
+&ws2812_pio1 {
+    pinctrl-0 = <&ws2812_pio1_default>;
+    pinctrl-names = "default";
+};
 
-/ {
-    chosen {
-        zmk,underglow = &underglow;
+&pinctrl {
+    ws2812_pio1_default: ws2812_pio1_default {
+        ws2812 {
+            pins = <16>; // Change this to your actual LED data pin
+            function = "PIO1";
+        };
     };
 };
