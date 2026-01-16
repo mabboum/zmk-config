@@ -5,7 +5,7 @@ manifest:
   projects:
     - name: zmk
       remote: SamIAm2000
-      revision: bongo-cat-dedicated-work-queue  # Use the optimized version
+      revision: bongo-cat  # Changed to simpler branch
       import: app/west.yml
   self:
     path: config
